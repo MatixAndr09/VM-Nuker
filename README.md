@@ -1,5 +1,5 @@
 # VM Nuker
-VM Nuker (Experimental) is Rust program that connects to ssh using a worldlist or a known password, then checks if it has sudo permissions, finaly types `sudo rm -rf *` to destroy entire VM.
+VM Nuker (Experimental) is Rust program that connects to SSH, then checks if it has sudo permissions, finaly types `sudo rm -rf /` to destroy entire linux based system.
 
 > [!WARNING]
 > The program was created for educational purposes ONLY. Only use it on people you have received permission from. Using this program without permission is illegal and may cause legal problems. I AM NOT RESPONSIBLE FOR ANY DAMAGE DONE WITH IT.
