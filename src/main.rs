@@ -63,11 +63,19 @@ fn main() {
     println!("\x1b[32m( + )\x1b[0m Authenticated with password");
     let mut channel = sess.channel_session().unwrap();
 
-    println!("\x1b[32m( + )\x1b[0m Sending command...");
-    channel.exec("ls -al").unwrap(); // Runs a ls -al command
-    println!("\x1b[32m( + )\x1b[0m Command executed");
-    let mut output = Vec::new();
+    println!("\x1b[32m( + )\x1b[0m Checking sudo permissions...");
+    channel.exec("sudo -vn").unwrap();
+    let mut s = String::new();
+    channel.read_to_string(&mut s).unwrap();
 
-    channel.read_to_end(&mut output).unwrap();
-    println!("{}", String::from_utf8_lossy(&output));
+    if s.contains("may not run sudo") {
+        println!("\x1b[31m( X )\x1b[0m User does not have sudo permission")
+    } else if s.contains("a password is required") {
+        println!("\x1b[33m( ! )\x1b[0m User has sudo permission but a password is required")
+    } else {
+        println!("\x1b[33m( ! )\x1b[0m User has sudo permission without password")
+    }
+
+    channel.close().unwrap();
+    sess.disconnect(None, "Normal Shutdown", None).unwrap();
 }
