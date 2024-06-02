@@ -6,4 +6,5 @@ VM Nuker (Experimental) is Rust program that connects to ssh using a worldlist o
 
 ## Status
 
-![GitHub branch status](https://img.shields.io/github/checks-status/MatixAndr09/VM-Nuker/master)
+![GitHub branch status](https://img.shields.io/github/checks-status/MatixAndr09/VM-Nuker/master) ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/MatixAndr09/VM-Nuker)
+
