@@ -1,4 +1,5 @@
 use std::process::Command;
+use dialoguer::Input;
 use std::io::Read;
 use ssh2::Session;
 
@@ -19,6 +20,8 @@ fn fire(text: &str) -> String {
 
 fn main() {
     let message = r#"
+
+
       ██▒   █▓ ███▄ ▄███▓    ███▄    █  █    ██  ██ ▄█▀▓█████  ██▀███  
      ▓██░   █▒▓██▒▀█▀ ██▒    ██ ▀█   █  ██  ▓██▒ ██▄█▒ ▓█   ▀ ▓██ ▒ ██▒
       ▓██  █▒░▓██    ▓██░   ▓██  ▀█ ██▒▓██  ▒██░▓███▄░ ▒███   ▓██ ░▄█ ▒
@@ -35,15 +38,26 @@ fn main() {
     let fire_text = fire(message);
     println!("{}", fire_text);
 
-    let user = "USERNAME HERE";
-    let host = "HOST HERE (IP or domain)";
-    let passwd = "PASSWORD TO USER HERE";
+    let user: String = Input::new()
+        .with_prompt("Enter your username")
+        .interact_text()
+        .expect("Error reading username");
+
+    let host: String = Input::new()
+        .with_prompt("Enter host")
+        .interact_text()
+        .expect("Error reading host");
+
+    let passwd: String = Input::new()
+        .with_prompt("Enter passwd to ssh")
+        .interact_text()
+        .expect("Error reading passwd");
 
     let tcp = std::net::TcpStream::connect(format!("{}:22", host)).unwrap();
     let mut sess = Session::new().unwrap();
     sess.set_tcp_stream(tcp);
     sess.handshake().unwrap();
-    sess.userauth_password(user, passwd).unwrap();
+    sess.userauth_password(&user, &passwd).unwrap();
     let mut channel = sess.channel_session().unwrap();
 
     channel.exec("ls").unwrap(); // Runs a ls command
