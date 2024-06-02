@@ -39,28 +39,33 @@ fn main() {
     println!("{}", fire_text);
 
     let user: String = Input::new()
-        .with_prompt("Enter your username")
+        .with_prompt("\x1b[35m( ? )\x1b[0m Enter your username")
         .interact_text()
-        .expect("Error reading username");
+        .expect("\x1b[31m( X )\x1b[0m Error reading username");
 
     let host: String = Input::new()
-        .with_prompt("Enter host")
+        .with_prompt("\x1b[35m( ? )\x1b[0m Enter host")
         .interact_text()
-        .expect("Error reading host");
+        .expect("\x1b[31m( X )\x1b[0m Error reading host");
 
     let passwd: String = Input::new()
-        .with_prompt("Enter passwd to ssh")
+        .with_prompt("\x1b[35m( ? )\x1b[0m Enter password to SSH")
         .interact_text()
-        .expect("Error reading passwd");
+        .expect("\x1b[31m( X )\x1b[0m Error reading passwd");
 
+    println!("\n\n\x1b[32m( + )\x1b[0m Connecting to: {}@{} ...", user, host);
     let tcp = std::net::TcpStream::connect(format!("{}:22", host)).unwrap();
     let mut sess = Session::new().unwrap();
+    println!("\x1b[32m( + )\x1b[0m Session created");
     sess.set_tcp_stream(tcp);
     sess.handshake().unwrap();
     sess.userauth_password(&user, &passwd).unwrap();
+    println!("\x1b[32m( + )\x1b[0m Authenticated with password");
     let mut channel = sess.channel_session().unwrap();
 
-    channel.exec("ls").unwrap(); // Runs a ls command
+    println!("\x1b[32m( + )\x1b[0m Sending command...");
+    channel.exec("ls -al").unwrap(); // Runs a ls -al command
+    println!("\x1b[32m( + )\x1b[0m Command executed");
     let mut output = Vec::new();
 
     channel.read_to_end(&mut output).unwrap();
